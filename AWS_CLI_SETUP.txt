@@ -1,0 +1,55 @@
+========================================
+AWS CLI Configuration Guide
+========================================
+
+STEP 1: Get AWS Credentials
+----------------------------
+1. Login to AWS Console: https://console.aws.amazon.com
+2. Go to: IAM → Users → Select your user
+3. Click: Security credentials tab
+4. Click: Create access key
+5. COPY and SAVE the Access Key ID and Secret Access Key
+   (Secret key is shown ONLY once!)
+
+
+STEP 2: Run aws configure
+--------------------------
+Open Command Prompt and type:
+
+    aws configure
+
+Then enter these values when prompted:
+
+    AWS Access Key ID [None]: YOUR_ACCESS_KEY_ID
+    AWS Secret Access Key [None]: YOUR_SECRET_ACCESS_KEY
+    Default region name [None]: ap-south-1
+    Default output format [None]: json
+
+
+STEP 3: Verify Configuration
+------------------------------
+Run this command to verify:
+
+    aws sts get-caller-identity
+
+If successful, it will return your IAM user info.
+
+
+========================================
+Common AWS Regions
+========================================
+ap-south-1       - Asia Pacific (Mumbai)
+us-east-1        - US East (N. Virginia)
+us-west-2        - US West (Oregon)
+eu-west-1        - Europe (Ireland)
+ap-southeast-1   - Asia Pacific (Singapore)
+
+
+========================================
+Important Notes
+========================================
+- Never share your Secret Access Key publicly
+- Max 2 active access keys per IAM user
+- Choose a region near you for better latency
+- Save credentials securely (password manager)
+========================================

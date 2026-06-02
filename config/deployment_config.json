@@ -1,0 +1,35 @@
+{
+  "projectName": "Serverless Event-Driven Cloud Application Deployment Framework",
+  "environment": "dev",
+  "region": "ap-south-1",
+  "eventSimulation": {
+    "defaultEventsPerSecond": 5,
+    "eventTypes": ["telemetry", "alert", "heartbeat"],
+    "priorities": ["low", "normal", "high"]
+  },
+  "routing": {
+    "highPriorityQueue": "high-priority",
+    "defaultQueue": "default"
+  },
+  "batching": {
+    "minBatchSize": 1,
+    "maxBatchSize": 25,
+    "targetBatchLatencyMs": 1500,
+    "maxWaitMs": 3000
+  },
+  "scaling": {
+    "minReservedConcurrency": 1,
+    "maxReservedConcurrency": 50,
+    "queueDepthScaleOutThreshold": 100,
+    "queueDepthScaleInThreshold": 10
+  },
+  "storage": {
+    "stateTableName": "event_state",
+    "resultsTableName": "event_results",
+    "connectionsTableName": "ws_connections"
+  },
+  "metrics": {
+    "namespace": "FTCC04/DemoFramework",
+    "publishIntervalSeconds": 5
+  }
+}

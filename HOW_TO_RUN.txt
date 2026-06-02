@@ -1,0 +1,287 @@
+================================================================================
+                FTCC04 - SERVERLESS EVENT-DRIVEN CLOUD APPLICATION
+                         HOW TO RUN ON ANOTHER COMPUTER
+================================================================================
+
+This file contains complete instructions to set up and run this project on a
+new computer. Follow each step carefully.
+
+================================================================================
+                              STEP 1: PREREQUISITES
+================================================================================
+
+Before starting, install the following software on your new computer:
+
+1. PYTHON 3.11+
+   - Download: https://www.python.org/downloads/
+   - During installation, CHECK "Add Python to PATH"
+   - Verify: Open CMD and type: python --version
+
+2. NODE.JS 18+ AND NPM
+   - Download: https://nodejs.org/ (choose LTS version)
+   - Verify: Open CMD and type: node --version && npm --version
+
+3. AWS CLI v2
+   - Download: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+   - For Windows: Download and run AWSCLIV2.msi installer
+   - Verify: Open CMD and type: aws --version
+
+4. AWS SAM CLI
+   - Open CMD and run: pip install aws-sam-cli
+   - Verify: Open CMD and type: sam --version
+
+================================================================================
+                          STEP 2: COPY PROJECT FILES
+================================================================================
+
+Copy the entire "FTCC04_Transfer" folder to your new computer.
+
+Recommended location:
+- C:\Projects\FTCC04
+- Or any folder of your choice
+
+================================================================================
+                         STEP 3: CONFIGURE AWS CREDENTIALS
+================================================================================
+
+1. Open Command Prompt (CMD)
+
+2. Run AWS configure:
+   aws configure
+
+3. Enter the following when prompted:
+   - AWS Access Key ID: [Ask the original project owner for these credentials]
+   - AWS Secret Access Key: [Ask the original project owner for these credentials]
+   - Default region name: ap-south-1
+   - Default output format: json
+
+   NOTE: You must obtain valid AWS credentials from someone who has access
+         to the AWS account where this project should be deployed.
+
+================================================================================
+                          STEP 4: DEPLOY BACKEND TO AWS
+================================================================================
+
+1. Open Command Prompt (CMD)
+
+2. Navigate to the infrastructure folder:
+   cd [PATH_TO_FTCC04]\infrastructure
+   Example: cd C:\Projects\FTCC04\infrastructure
+
+3. Build the SAM template:
+   sam build
+
+4. Deploy to AWS:
+   sam deploy --guided
+
+5. During first-time deployment, enter these values:
+   - Stack name: ftcc04-stack
+   - AWS Region: ap-south-1
+   - Accept all default values by pressing Enter
+
+6. WAIT for deployment to complete (this may take 5-10 minutes)
+
+7. IMPORTANT: Save the output values shown at the end, especially:
+   - HttpApiUrl (looks like: https://abc123.execute-api.ap-south-1.amazonaws.com)
+   - WebSocketUrl (looks like: wss://abc123.execute-api.ap-south-1.amazonaws.com/dev)
+
+================================================================================
+                       STEP 5: CONFIGURE FRONTEND
+================================================================================
+
+1. Navigate to the frontend folder:
+   cd [PATH_TO_FTCC04]\frontend
+   Example: cd C:\Projects\FTCC04\frontend
+
+2. Open the .env file in a text editor (Notepad, VS Code, etc.)
+
+3. Replace the placeholder values with your actual API URLs from Step 4:
+   
+   BEFORE:
+   VITE_HTTP_API_BASE=https://OLD_URL.execute-api.region.amazonaws.com
+   VITE_WS_URL=wss://OLD_URL.execute-api.region.amazonaws.com/dev
+   
+   AFTER (use YOUR URLs from Step 4):
+   VITE_HTTP_API_BASE=https://YOUR_HTTPDAPI_URL.execute-api.ap-south-1.amazonaws.com
+   VITE_WS_URL=wss://YOUR_WEBSOCKET_URL.execute-api.ap-south-1.amazonaws.com/dev
+
+4. Save the file
+
+================================================================================
+                    STEP 6: INSTALL FRONTEND DEPENDENCIES
+================================================================================
+
+1. Open Command Prompt (CMD)
+
+2. Navigate to frontend folder:
+   cd [PATH_TO_FTCC04]\frontend
+
+3. Install dependencies:
+   npm install
+
+   NOTE: This may take 5-10 minutes. Wait for it to complete.
+
+================================================================================
+                            STEP 7: RUN THE PROJECT
+================================================================================
+
+OPTION A: Using Batch Files (Easiest Method)
+--------------------------------------------
+1. Double-click these files in the project folder:
+   
+   - run_frontend.bat    -> Starts the React dashboard
+   - run_simulator.bat   -> Starts the event simulator (optional)
+   - run_project.bat      -> Starts both frontend and simulator
+
+OPTION B: Using Command Prompt
+------------------------------
+1. Start the Frontend Dashboard:
+   
+   cd [PATH_TO_FTCC04]\frontend
+   npm run dev
+   
+   The dashboard will open at: http://localhost:5173
+
+2. (Optional) Start the Event Simulator in a NEW terminal:
+   
+   cd [PATH_TO_FTCC04]\backend
+   pip install -r requirements.txt
+   python tools\event_source_simulator.py --url [YOUR_HTTPAPI_URL]/events --eps 5 --device device-1
+
+   Replace [YOUR_HTTPAPI_URL] with your HttpApiUrl from Step 4.
+
+================================================================================
+                        STEP 8: VERIFY IT'S WORKING
+================================================================================
+
+1. Open your browser and go to: http://localhost:5173
+
+2. You should see the FTCC04 Dashboard
+
+3. Navigate through different pages:
+   - System Overview (home page)
+   - Real-Time Event Stream
+   - Event Ingestion Monitor
+   - Queue Depth Visualization
+   - And more...
+
+4. If you started the simulator, you should see live events flowing through
+   the system in real-time.
+
+================================================================================
+                            QUICK REFERENCE
+================================================================================
+
+PROJECT STRUCTURE:
+------------------
+FTCC04_Transfer/
+├── backend/           - AWS Lambda functions (Python)
+│   ├── src/
+│   │   ├── common/    - Shared utilities
+│   │   └── functions/- All Lambda function handlers
+│   └── tools/         - Event simulator
+├── frontend/          - React Dashboard
+│   └── src/
+│       ├── pages/    - Dashboard pages (12 total)
+│       ├── components/- Reusable UI components
+│       └── hooks/    - Custom React hooks
+├── infrastructure/    - AWS SAM templates
+│   └── template.yaml - AWS resource definitions
+├── config/           - Deployment configuration
+└── *.bat            - Quick launch scripts
+
+DASHBOARD PAGES:
+----------------
+/                   - System Overview (KPIs, latency chart)
+/stream             - Real-Time Event Stream
+/ingestion          - Event Ingestion Monitor
+/queues             - Queue Depth Visualization
+/batching           - Adaptive Batching Visualization
+/autoscaling        - Auto-Scaling Dashboard
+/execution          - Serverless Execution View
+/state              - Stateful Data Visualization
+/performance        - Performance Metrics Dashboard
+/logs               - Logs & Alerts View
+/results            - Processed Results View
+/config             - Deployment Configuration
+
+BATCH FILES:
+------------
+run_frontend.bat      - Start React dashboard only
+run_simulator.bat     - Start event simulator only
+run_project.bat      - Start both frontend and simulator
+deploy_backend.bat   - Deploy backend to AWS
+
+================================================================================
+                          TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "Command not found" errors
+SOLUTION: 
+- Restart Command Prompt after installing software
+- Ensure Python and Node.js are in your system PATH
+- Try restarting your computer
+
+PROBLEM: AWS credentials not recognized
+SOLUTION:
+- Run: aws configure
+- Verify credentials in: C:\Users\[YourName]\.aws\credentials
+- Make sure you entered the correct Access Key and Secret Key
+
+PROBLEM: Frontend shows connection errors
+SOLUTION:
+- Verify .env file has correct API URLs from Step 4
+- Make sure backend is deployed (Step 4)
+- Check for typos in the URLs
+
+PROBLEM: SAM build or deploy fails
+SOLUTION:
+- Verify AWS SAM CLI is installed: sam --version
+- Run: pip install aws-sam-cli
+- Check AWS credentials are configured
+- Ensure you have permission to create AWS resources
+
+PROBLEM: npm install fails
+SOLUTION:
+- Delete node_modules folder
+- Delete package-lock.json
+- Run npm install again
+- Check your internet connection
+
+PROBLEM: WebSocket not working
+SOLUTION:
+- Verify WebSocket URL format is correct (wss://...)
+- Ensure API Gateway WebSocket API is deployed
+- Check browser console for errors
+
+================================================================================
+                         CLEANING UP (Optional)
+================================================================================
+
+To delete all AWS resources created by this project:
+
+1. Open Command Prompt
+2. Navigate to infrastructure folder:
+   cd [PATH_TO_FTCC04]\infrastructure
+3. Run:
+   sam delete
+
+================================================================================
+                              NEED HELP?
+================================================================================
+
+For more details, refer to:
+- README.md              - Main project documentation
+- RUN.md                 - Original run instructions
+- AWS_CLI_SETUP.txt     - AWS CLI configuration guide
+- config/deployment_config.json - Project configuration
+
+================================================================================
+                           PROJECT CREDITS
+================================================================================
+
+Project: FTCC04 - Serverless Event-Driven Cloud Application
+Based on: ScalaSSC CCGrid 2025 Paper (Python + AWS adaptation)
+Purpose: Educational demonstration of real-time serverless architecture
+
+================================================================================
